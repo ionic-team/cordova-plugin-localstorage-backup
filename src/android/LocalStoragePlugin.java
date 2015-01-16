@@ -1,9 +1,27 @@
 package org.apache.cordova.Plugin;
 
-import org.apache.cordova.api.CallbackContext;
-import org.apache.cordova.api.CordovaPlugin;
-import org.apache.cordova.api.PluginResult;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.os.Build;
+import android.util.JsonReader;
+import android.util.JsonToken;
+import android.util.Log;
+import android.webkit.ValueCallback;
+
+import java.io.IOException;
+import java.io.StringReader;
+
+import org.apache.cordova.AndroidWebView;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
 import org.apache.cordova.CordovaActivity;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaWebView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This class echoes a string called from JavaScript.
@@ -23,7 +41,7 @@ public class LocalStoragePlugin extends CordovaPlugin {
 
   public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     super.initialize(cordova, webView);
-    Device.uuid = getUuid();
+    // Device.uuid = getUuid();
   }
 
     /**
@@ -37,18 +55,18 @@ public class LocalStoragePlugin extends CordovaPlugin {
   @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
 
-      CordovaActivity activity = ((CordovaActivity)context.getApplicationContext()).getCurrentActivity()
-      CordovaWebView defaultWebView = (CordovaWebView) activity.makeWebView();
+      CordovaActivity activity = ((CordovaActivity)this.cordova.getActivity());
+      AndroidWebView defaultWebView = (AndroidWebView) activity.makeWebView();
 
       cbContext = callbackContext;
 
         try {
-          String jsForLocalStorage = '
-          var items = [];
-          for (var i = 0; i < localStorage.length; i++){
-            items.push({key: localStorage.key(i), value: localStorage.getItem( localStorage.key(i) )});
-          }';
-          String jsCallback = 'JSInterface.passBackValues(items);';
+          String jsForLocalStorage = "" +
+          "var items = [];" +
+          "for (var i = 0; i < localStorage.length; i++){" +
+            "items.push({key: localStorage.key(i), value: localStorage.getItem( localStorage.key(i) )});"+
+          "}";
+          String jsCallback = "JSInterface.passBackValues(items);";
 
           if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
               // In KitKat+ you should use the evaluateJavascript method
@@ -56,8 +74,9 @@ public class LocalStoragePlugin extends CordovaPlugin {
                   @TargetApi(Build.VERSION_CODES.HONEYCOMB)
                   @Override
                   public void onReceiveValue(String s) {
+                    JsonReader reader = null;
                       try {
-                          JsonReader reader = new JsonReader(new StringReader(s));
+                          reader = new JsonReader(new StringReader(s));
 
                           // Must set lenient to parse single values
                           reader.setLenient(true);
@@ -72,7 +91,7 @@ public class LocalStoragePlugin extends CordovaPlugin {
                       } finally {
                           try {
                               reader.close();
-                              cbContext.
+                              cbContext.success("json");
                           } catch (IOException e) {
                               // NOOP
                           }
@@ -87,12 +106,9 @@ public class LocalStoragePlugin extends CordovaPlugin {
                **/
               JavaScriptInterface jsInterface = new JavaScriptInterface(activity);
               defaultWebView.addJavascriptInterface(jsInterface, "JSInterface");
-              defaultWebView.loadUrl("javascript:"+javascript);
+              defaultWebView.loadUrl("javascript:" + jsForLocalStorage + jsCallback);
           }
-            if(action.equals("retrieve")) {
-
-            }
-        } catch (JSONException e) {
+        } catch (Exception e) {
 
         }
         return false;
@@ -106,9 +122,9 @@ public class LocalStoragePlugin extends CordovaPlugin {
             mContext = c;
         }
 
-        public void passBackValues(items)
+        public void passBackValues(String items)
         {
-          LOG.e(TAG, "CordovaWebView: We got some localStorage items " + items.toString());
+          Log.e(TAG, "CordovaWebView: We got some localStorage items " + items);
         }
     }
 }

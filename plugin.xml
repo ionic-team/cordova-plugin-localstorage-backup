@@ -21,7 +21,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    id="org.apache.cordova.device"
+    id="org.apache.cordova.localstorageplugin"
     version="0.2.14-dev">
     <name>LocalStoragePlugin</name>
     <description>Cordova Local Storage Plugin</description>
@@ -37,7 +37,7 @@
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="LocalStoragePlugin" >
-                <param name="android-package" value="org.apache.cordova.LocalStoragePlugin.LocalStoragePlugin"/>
+                <param name="android-package" value="org.apache.cordova.Plugin.LocalStoragePlugin"/>
             </feature>
         </config-file>
 
