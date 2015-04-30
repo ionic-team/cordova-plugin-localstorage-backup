@@ -1,30 +1,15 @@
-var argscheck = require('cordova/argscheck'),
-    channel = require('cordova/channel'),
-    utils = require('cordova/utils'),
-    exec = require('cordova/exec'),
-    cordova = require('cordova');
+var exec = require('cordova/exec');
 
-channel.createSticky('onCordovaInfoReady');
-// Tell cordova channel to wait on the CordovaInfoReady event
-channel.waitForInitialization('onCordovaInfoReady');
+var LocalStoragePlugin = {};
 
-/**
- * This represents the mobile device, and provides properties for inspecting the model, version, UUID of the
- * phone, etc.
- * @constructor
- */
-function LocalStoragePlugin() {
+LocalStoragePlugin.saveLocalStorage = function(success, fail) {
+    exec(success, fail, "LocalStoragePlugin", "save", [localStorage]);
 }
 
-/**
- * Get device info
- *
- * @param {Function} successCallback The function to call when the heading data is available
- * @param {Function} errorCallback The function to call when there is an error getting the heading data. (OPTIONAL)
- */
-LocalStoragePlugin.prototype.getLocalStorageData = function(successCallback, errorCallback) {
-    argscheck.checkArgs('fF', 'LocalStoragePlugin.getInfo', arguments);
-    exec(successCallback, errorCallback, "LocalStoragePlugin", "getLocalStorageData", []);
-};
+LocalStoragePlugin.loadLocalStorage = function(success, fail) {
+    exec(success, fail, "LocalStoragePlugin", "load", []);
+}
+               
+module.exports = LocalStoragePlugin;
 
-module.exports = new LocalStoragePlugin();
+

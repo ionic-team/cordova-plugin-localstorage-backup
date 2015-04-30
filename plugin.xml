@@ -44,4 +44,16 @@
         <source-file src="src/android/LocalStoragePlugin.java" target-dir="src/org/apache/cordova/localstorage" />
     </platform>
 
+     <!-- ios -->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="LocalStoragePlugin">
+                <param name="ios-package" value="LocalStoragePlugin"/>
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/LocalStorageRetrieval.h" />
+        <source-file src="src/ios/LocalStorageRetrieval.m" />
+    </platform>
+
 </plugin>
