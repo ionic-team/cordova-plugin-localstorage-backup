@@ -13,13 +13,16 @@
                                                        options:NSJSONWritingPrettyPrinted
                                                          error:&error];
     
-    
     CDVPluginResult* pluginResult;
     if (error != nil) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_JSON_EXCEPTION
                                          messageAsString:[NSString stringWithFormat:@"Error serializing localStorage JSON, error: %@", [error localizedDescription]]];
     } else {
-        [[NSUserDefaults standardUserDefaults] setObject:jsonData forKey:@"localStorage"];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:jsonData forKey:@"localStorage"];
+        // maybe not the most performant, but guarantees values are written to disk
+        // if the app quits before iOS syncs
+        // [defaults synchronize];
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
