@@ -10,6 +10,8 @@ LocalStoragePlugin.loadLocalStorage = function(success, fail) {
     exec(success, fail, "LocalStoragePlugin", "load", []);
 }
                
+LocalStoragePlugin.clear = function(success, fail) {
+    exec(success, fail, "LocalStoragePlugin", "clear", []);
+}
+
 module.exports = LocalStoragePlugin;
-
-

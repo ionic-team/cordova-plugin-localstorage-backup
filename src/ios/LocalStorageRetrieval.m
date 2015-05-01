@@ -50,6 +50,12 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-@end
+- (void) clear:(CDVInvokedUrlCommand*)command {
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"localStorage"];
 
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK]
+                                callbackId:command.callbackId];
+}
+
+@end
 
