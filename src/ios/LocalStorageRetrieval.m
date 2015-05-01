@@ -27,14 +27,23 @@
 
 - (void) load:(CDVInvokedUrlCommand*)command {
     NSData *jsonData = [[NSUserDefaults standardUserDefaults] objectForKey:@"localStorage"];
-    NSError *error;
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData
-                                                         options:NSJSONReadingAllowFragments
-                                                           error:&error];
-    
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                                  messageAsDictionary:json];
-    
+    CDVPluginResult* pluginResult;
+    if (jsonData == nil) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+    } else {
+        NSError *error;
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                             options:NSJSONReadingAllowFragments
+                                                               error:&error];
+        if (error != nil) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_JSON_EXCEPTION
+                                             messageAsString:[NSString stringWithFormat:@"Error serializing localStorage JSON, error: %@", [error localizedDescription]]];
+        } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                                          messageAsDictionary:json];
+        }
+    }
+
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
