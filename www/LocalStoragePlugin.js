@@ -2,11 +2,11 @@ var exec = require('cordova/exec');
 
 var LocalStoragePlugin = {};
 
-LocalStoragePlugin.saveLocalStorage = function(success, fail) {
+LocalStoragePlugin.save = function(success, fail) {
     exec(success, fail, "LocalStoragePlugin", "save", [localStorage]);
 }
 
-LocalStoragePlugin.loadLocalStorage = function(success, fail) {
+LocalStoragePlugin.load = function(success, fail) {
     exec(success, fail, "LocalStoragePlugin", "load", []);
 }
                
