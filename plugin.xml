@@ -21,27 +21,27 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    id="org.apache.cordova.localstorageplugin"
-    version="0.2.14-dev">
+    id="cordova-plugin-localstorage-backup"
+    version="0.0.1">
     <name>LocalStoragePlugin</name>
     <description>Cordova Local Storage Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,device</keywords>
     <repo>https://git-wip-us.apache.org/repos/asf/cordova-plugin-device.git</repo>
 
-    <js-module src="www/LocalStoragePlugin.js" name="LocalStoragePlugin">
-        <clobbers target="LocalStoragePlugin" />
+    <js-module src="www/LocalStorageBackup.js" name="LocalStorageBackup">
+        <clobbers target="LocalStorageBackup" />
     </js-module>
 
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="LocalStoragePlugin" >
-                <param name="android-package" value="org.apache.cordova.Plugin.LocalStoragePlugin"/>
+            <feature name="LocalStorageBackup" >
+                <param name="android-package" value="io.ionic.localstoragebackup.LocalStorageBackup"/>
             </feature>
         </config-file>
 
-        <source-file src="src/android/LocalStoragePlugin.java" target-dir="src/org/apache/cordova/localstorage" />
+        <source-file src="src/android/LocalStorageBackup.java" target-dir="src/io/ionic/localstoragebackup" />
     </platform>
 
      <!-- ios -->
