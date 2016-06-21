@@ -16,61 +16,73 @@ import org.json.JSONException;
  */
 public class LocalStorageBackup extends CordovaPlugin {
 
-  public static final String NAME = "LocalStorageBackup";
+    public static final String NAME = "LocalStorageBackup";
 
-  public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-      super.initialize(cordova, webView);
-  }
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        super.initialize(cordova, webView);
+    }
 
     /**
      * Executes the request and returns PluginResult.
      *
-     * @param action            The action to execute.
-     * @param args              JSONArray of arguments for the plugin.
-     * @param callbackContext   The callback id used when calling back into JavaScript.
-     * @return                  A PluginResult object with a status and message.
+     * @param action          The action to execute.
+     * @param args            JSONArray of arguments for the plugin.
+     * @param callbackContext The callback id used when calling back into JavaScript.
+     * @return A PluginResult object with a status and message.
      */
-  @Override
-  public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-      String id, localStorageString;
-      boolean result;
-      SharedPreferences prefs = cordova.getActivity().getSharedPreferences(NAME, 0);
+    @Override
+    public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
 
-      if ("save".equals(action)) {
-          id = args.getString(0);
-          localStorageString = args.getString(1);
-          result = prefs.edit().putString(id, localStorageString).commit();
+        final String id;
+        final SharedPreferences prefs = cordova.getActivity().getSharedPreferences(NAME, 0);
 
-          if (result) {
-              callbackContext.success();
-          } else {
-              callbackContext.error("There was an error saving localStorage to persistent storage.");
-          }
+        if ("save".equals(action)) {
+            id = args.getString(0);
+            final String localStorageString = args.getString(1);
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    boolean result = prefs.edit().putString(id, localStorageString).commit();
 
-          return true;
-      }
+                    if (result) {
+                        callbackContext.success();
+                    } else {
+                        callbackContext.error("There was an error saving localStorage to persistent storage.");
+                    }
+                }
+            });
 
-      if ("load".equals(action)) {
-          id = args.getString(0);
-          localStorageString = prefs.getString(id, "{}");
-          callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, localStorageString));
+            return true;
+        }
 
-          return true;
-      }
+        if ("load".equals(action)) {
+            id = args.getString(0);
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    String savedLocalStorageString = prefs.getString(id, "{}");
+                    callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, savedLocalStorageString));
+                }
+            });
 
-      if ("clear".equals(action)) {
-          id = args.getString(0);
-          result = prefs.edit().remove(id).commit();
+            return true;
+        }
 
-          if (result) {
-              callbackContext.success();
-          } else {
-              callbackContext.error("There was an error clearing localStorage from persistent storage.");
-          }
+        if ("clear".equals(action)) {
+            id = args.getString(0);
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    boolean result = prefs.edit().remove(id).commit();
 
-          return true;
-      }
+                    if (result) {
+                        callbackContext.success();
+                    } else {
+                        callbackContext.error("There was an error clearing localStorage from persistent storage.");
+                    }
+                }
+            });
 
-      return false;
+            return true;
+        }
+
+        return false;
     }
 }
