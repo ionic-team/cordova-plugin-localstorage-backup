@@ -19,8 +19,8 @@ LocalStorageBackup.load = function(id, callback) {
   }
 }
 
-LocalStorageBackup.clear = function(callback) {
-  exec(callback, callback, "LocalStorageBackup", "clear", []);
+LocalStorageBackup.clear = function(id, callback) {
+  exec(callback, callback, "LocalStorageBackup", "clear", [id]);
 }
 
 module.exports = LocalStorageBackup;

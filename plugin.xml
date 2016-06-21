@@ -47,13 +47,13 @@
      <!-- ios -->
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
-            <feature name="LocalStoragePlugin">
-                <param name="ios-package" value="LocalStoragePlugin"/>
+            <feature name="LocalStorageBackup">
+                <param name="ios-package" value="LocalStorageBackup"/>
             </feature>
         </config-file>
 
-        <header-file src="src/ios/LocalStorageRetrieval.h" />
-        <source-file src="src/ios/LocalStorageRetrieval.m" />
+        <header-file src="src/ios/LocalStorageBackup.h" />
+        <source-file src="src/ios/LocalStorageBackup.m" />
     </platform>
 
 </plugin>
