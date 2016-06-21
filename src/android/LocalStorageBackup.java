@@ -59,7 +59,8 @@ public class LocalStorageBackup extends CordovaPlugin {
       }
 
       if ("clear".equals(action)) {
-          result = prefs.edit().clear().commit();
+          id = args.getString(0);
+          result = prefs.edit().remove(id).commit();
 
           if (result) {
               callbackContext.success();
